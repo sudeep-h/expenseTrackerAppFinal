@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up</title>
+  <!-- <style>
+    /* CSS styles here */
+  </style> -->
+</head>
+<body>
+  <div class="container">
+
+    <form id="signupForm">
+      <h2 style="color: royalblue;">Sign Up</h2>
+      <label for="name">Username:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <input type="submit" value="Sign Up">
+    </form>
+    <p style="text-align: center;">Already have an account? <a href="/login">Log in</a></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    async function signup(e) {
+      e.preventDefault();
+
+      const signUpDetails = {
+        name: e.target.name.value,
+        email: e.target.email.value,
+        password: e.target.password.value
+      };
+
+      try {
+        const response = await axios.post('/user/signup', signUpDetails);
+        if (response.status === 201) {
+          alert(response.data.message);
+          alert("Successfully signed up! Please Login");
+          window.location.href = "/login"; // Redirect to login page
+        }
+      } catch (err) {
+        console.log(err);
+        alert("User already signed up. Please go to the login page.");
+      }
+    }
+
+    document.getElementById('signupForm').addEventListener('submit', signup);
+  </script>
+</body>
+</html>

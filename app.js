@@ -1,17 +1,27 @@
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
-const controller = require('./controllers/user');
+const app = express();
+const controller = require('./controllers/loginC');
 const sequelize = require('./util/database');
-const axios = require('axios');
 
 const User = require('./models/user');
 
 
-const app = express();
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
+
+app.get('/',(req,res)=>{
+    res.sendFile(path.join(__dirname,'public','signup.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  });
+
+const userRouter = require('./routes/users');
+
+app.use('/user', userRouter);
 
 sequelize.sync()
     .then(()=>{
@@ -23,10 +33,6 @@ sequelize.sync()
     })
 
 
-app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,'routes','user','signup.html'));
-});
-
-app.post('/submit-form', controller.insertData);
+// app.post('/signupform', controller.signUp);
 
 app.listen(3100);
