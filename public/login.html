@@ -92,6 +92,34 @@
   <button class="button" id="forgotpassword">Forgot password</button>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-  
+  <script>
+    async function login(e) {
+      e.preventDefault();
+
+      const LoginDetails = {
+        email: e.target.email.value,
+        password: e.target.password.value
+      };
+
+      console.log(LoginDetails);
+
+      try {
+        const response = await axios.post('/user/login', LoginDetails);
+        if (response.status === 200) {
+          alert(`${response.data.message}`);
+          localStorage.setItem('token', response.data.token)
+          window.location.href = "expense.html";
+        }
+      } catch (err) {
+          alert(`${err.response.data.message}`);
+          console.log("error occured during login")
+        }
+      }
+     const fpw = document.getElementById('forgotpassword')
+     fpw.onclick=()=>{
+      window.location.href="./password.html"
+     }
+
+  </script>
 </body>
 </html>

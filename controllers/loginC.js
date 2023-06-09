@@ -28,4 +28,23 @@ async function signUp(req,res){
     }
 }
 
-module.exports={signUp}
+async function login(req,res){
+    const {email} = req.body;
+    console.log("recieved login data: ",email);
+    try{
+        const user = await User.findOne({where:{email}});
+
+        if(!user){
+            console.log("User does not exist");
+            return res.status(401).send({message:"Invalid email or password"});
+        }
+
+        console.log("Login Successfull");
+        return res.status(200).send({message:"Login Successfull"});
+    }catch(error){
+        console.log("error : ", error);
+        return res.status(500).send({message:"Internal Server Error"});
+    }
+}
+
+module.exports={signUp,login}

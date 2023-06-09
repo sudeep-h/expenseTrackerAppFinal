@@ -32,7 +32,4 @@ sequelize.sync()
         console.log("Failed to sync data with database");
     })
 
-
-// app.post('/signupform', controller.signUp);
-
 app.listen(3100);
