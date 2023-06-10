@@ -5,7 +5,7 @@
 
   <title>Login</title>
   <style>
-    body {
+    /* body {
       font-family: Arial, sans-serif;
       background-image: linear-gradient(to bottom right, #4B8BF4, #FF6B6B);
       background-repeat: no-repeat;
@@ -75,7 +75,28 @@
       text-align: center;
     }
 
-    
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .button {
+      background-color: #FFCE67;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .button:hover {
+      background-color: #ffb800;
+    } */
   </style>
 </head>
 <body>
@@ -89,7 +110,10 @@
 
     <input type="submit" value="Login">
   </form>
-  <button class="button" id="forgotpassword">Forgot password</button>
+  <div>
+    <button class="button" id="forgotpassword">Forgot password</button>
+  </div>
+  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
   <script>
@@ -107,7 +131,7 @@
         const response = await axios.post('/user/login', LoginDetails);
         if (response.status === 200) {
           alert(`${response.data.message}`);
-          localStorage.setItem('token', response.data.token)
+        //   localStorage.setItem('token', response.data.token)
           window.location.href = "expense.html";
         }
       } catch (err) {
