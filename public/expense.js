@@ -52,7 +52,7 @@ async function getExpenses(){
             headers : {"Authorization" : token }
         });
         console.log("CHECKING RESPONSE",response);
-        const data = response.data;
+        const data = response.data.data;
         console.log("data printing : ",data);
         data.forEach(expense=>{
             showOnScreen(expense);
