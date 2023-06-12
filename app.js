@@ -8,6 +8,7 @@ const sequelize = require('./util/database');
 
 const User = require('./models/user');
 const Expense = require('./models/expense');
+const Order = require('./models/order');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
@@ -24,12 +25,18 @@ app.get('/login', (req, res) => {
 
 const userRouter = require('./routes/users');
 const expenseRouter = require('./routes/expenses');
+const purchaseRouter = require('./routes/purchase');
+
 
 app.use('/user', userRouter);
 app.use('/expense',expenseRouter);
+app.use('/purchase',purchaseRouter);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 sequelize.sync({force:false})
     .then(()=>{
