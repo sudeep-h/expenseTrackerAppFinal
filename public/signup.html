@@ -38,18 +38,20 @@
 
       try {
         const response = await axios.post('/user/signup', signUpDetails);
+        console.log("first stage of signup")
         if (response.status === 201) {
+            console.log("THIS IS INSIDE IF ")
           alert(response.data.message);
           alert("Successfully signed up! Please Login");
           window.location.href = "/login"; // Redirect to login page
         }
       } catch (err) {
-        console.log(err);
-        alert("User already signed up. Please go to the login page.");
+        console.log(err.message);
+        alert("User already signed up. Please go to the login page.",err.message);
       }
     }
 
-    // document.getElementById('signupForm').addEventListener('submit', signup);
+    document.getElementById('signupForm').addEventListener('submit', signup);
   </script>
 </body>
 </html>

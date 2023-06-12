@@ -2,18 +2,17 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express();
+var cors = require('cors');
 const controller = require('./controllers/loginC');
 const sequelize = require('./util/database');
 
 const User = require('./models/user');
 const Expense = require('./models/expense');
 
-
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public')));
-// app.use(cors());
+app.use(cors());
 
 app.get('/',(req,res)=>{
     res.sendFile(path.join(__dirname,'public','signup.html'));
@@ -29,7 +28,10 @@ const expenseRouter = require('./routes/expenses');
 app.use('/user', userRouter);
 app.use('/expense',expenseRouter);
 
-sequelize.sync()
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
+sequelize.sync({force:false})
     .then(()=>{
         console.log("Models synchronised with database")
     })
