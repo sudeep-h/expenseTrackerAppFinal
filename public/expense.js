@@ -1,78 +1,94 @@
 const expenseForm = document.getElementById('expense-form');
 expenseForm.addEventListener('submit',addExpense);
 
-async function addExpense(event){
+window.onload = async function()
+{
+    await getExpenses()
+}
+
+async function addExpense(event) {
     event.preventDefault();
-
+  
     const expense = {
-        amount:event.target.amount.value,
-        description:event.target.description.value,
-        category:event.target.category.value,
-        userId:1
+      amount: event.target.amount.value,
+      description: event.target.description.value,
+      category: event.target.category.value
     };
-
-    console.log(expense);
-
-    try{
-        const response = await axios.post('http://localhost:3100/expense/postExpense',expense);
-        console.log("Expense data sent to the server",response.data.expense);
-        showOnScreen(response.data.expense);
-        // expenseForm.reset();
-    }catch(error){
-        console.log("Error sending expenses data",error) 
+  
+    console.log("Added Expense : ",expense);
+    const token = localStorage.getItem('token');
+  
+    try {
+      const response = await axios.post('http://localhost:3100/expense/postExpense', expense, {headers: { 'Authorization': token }});
+      console.log(response.headers);
+      console.log("Expense data sent to the server:", response.data.expense);
+      showOnScreen(response.data.expense);
+      expenseForm.reset();
+    } catch (error) {
+      console.log("Error sending expense data:", error);
     }
 }
 
-// function showOnScreen(expense){
-//     const expenseList = document.getElementById('expenses');
-//     const expenseId = `expense-${expense.id}`;
-//     const li = document.createElement('li');
-//     li.textContent=`${expense.id} - ${expense.amount} - ${expense.description} - ${expense.category}`;
-//     expenseList.appendChild(li);
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+}
 
-//     const delb = document.createElement('input');
-//     delb.type="button";
-//     delb.value = "delete";
-//     delb.onclick=async ()=>{
-//         try{
-//             const response = axios.delete(`http://localhost:3100/expense/deleteExpense/${expense.id}`);
-//             console.log("Deleting Expense");
-//         }catch(err){
-//             console.log("Error deleting the expense",err);
-//         }
-//     }
+const token = localStorage.getItem('token');
+const decodeToken = parseJwt(token);
+console.log("decodeToken : ",decodeToken);
 
-//     li.appendChild(delb);
-//     expenseList.appendChild(li);
-// }
+window.onload = function(){
+    getExpenses();
+};
 
-function showOnScreen(expense) {
-    const expensesList = document.getElementById('expenses');
+async function getExpenses(){
+    try{
+        const response = await axios.get("http://localhost:3100/expense/getExpense",{
+            headers : {"Authorization" : token }
+        });
+        console.log("CHECKING RESPONSE",response);
+        const data = response.data;
+        console.log("data printing : ",data);
+        data.forEach(expense=>{
+            showOnScreen(expense);
+        });
+    }catch(err){
+        console.log("Error Loading Expenses : ",err.message);
+    }
+}
+
+function showOnScreen(expense){
+    const expenseList = document.getElementById('expenses');
     const expenseId = `expense-${expense.id}`;
     const li = document.createElement('li');
-    li.textContent = `Amount: ${expense.amount} - Description: ${expense.description} - Category: ${expense.category}`;
-    expensesList.appendChild(li);
+    li.textContent=`${expense.id} - ${expense.amount} - ${expense.description} - ${expense.category}`;
+    expenseList.appendChild(li);
 
-    const deleteBtn = document.createElement('input');
-    deleteBtn.type = 'button';
-    deleteBtn.value = 'delete';
-    deleteBtn.onclick = () => {
-        console.log('Deleting expense with ID:', expense.id);
-        fetch(`/Expense/delete-expense/${expense.id}`, {
-        method: 'DELETE'
-    })
-    .then(response=>response.json())
-    .then(data=>{
-        console.log(data.message);
-        const formData = document.getElementById('expenses');
-        const deletedExpense = formData.querySelector(`li[id="${expenseId}"]`);
-        deletedExpense.remove();
-    })
-    .catch(err=>{
-        console.log(err.message);
-    })
+    const delb = document.createElement('input');
+    delb.type="button";
+    delb.value = "delete";
+    delb.onclick= async ()=>{
+        const token = localStorage.getItem('token');
+        li.remove();
+        try{
+            const response = await axios.delete(`http://localhost:3100/expense/deleteExpense/${expense.id}`,{
+                headers:{'Authorization': token }
+            });
+            console.log("Deleting Expense",response);
+        }catch(err){
+            console.log("Error deleting the expense",err.message);
+        }
     }
 
-    li.appendChild(deleteBtn);
-    expensesList.appendChild(li);
+    li.appendChild(delb);
+    expenseList.appendChild(li);
 }
+
+
+
+

@@ -113,9 +113,6 @@
   <div>
     <button class="button" id="forgotpassword">Forgot password</button>
   </div>
-  <!-- <div>
-    <button class="button" id="newuser">New user - signup now</button>
-  </div> -->
   <p>New User? signup - now <a href="/signup">Sign up</a></p>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
@@ -134,7 +131,7 @@
         const response = await axios.post('/user/login', LoginDetails);
         if (response.status === 200) {
           alert(`${response.data.message}`);
-        //   localStorage.setItem('token', response.data.token)
+          localStorage.setItem('token', response.data.token)
           window.location.href = "expense.html";
         }
       } catch (err) {
@@ -146,10 +143,10 @@
      fpw.onclick=()=>{
       window.location.href="./password.html"
      }
-    //  const newUser = document.getElementById('newuser')
-    //  newUser.onclick=()=>{
-    //     window.location.href="/signup";
-    //  }
+     const newUser = document.getElementById('newuser')
+     newUser.onclick=()=>{
+        window.location.href="/signup"
+     }
   </script>
 </body>
 </html>
