@@ -106,7 +106,7 @@ document.getElementById('razorpay').onclick = async function(e){
                 {order_id:options.order_id,payment_id:response.razorpay_payment_id},{         
                     headers:{"Authorization":token}
                 });
-                console.log("payment-id : ",payment_id);
+                console.log("payment-id : ",response.razorpay_payment_id);
                 alert("Congratulations!!! You are a premium User Now");
             }
         };
