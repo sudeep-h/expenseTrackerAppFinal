@@ -11,6 +11,9 @@ async function addExpense(req, res) {
         userId: req.user.id
       });
       const userId = req.user.id;
+      const totalExpense = await Expense.sum('amount', { where: { userId } });
+      // Update the totalexpense field in the users table
+      await User.update({ totalexpense: totalExpense }, { where: { id: userId } });
       res.status(200).json({ message: 'Expense created successfully', expense });
     } catch (error) {
         console.log(error.message);
@@ -42,6 +45,12 @@ async function deleteExpense(req, res) {
       }
       // Delete the expense from the database
       await Expense.destroy({ where: { id: expenseId } });
+      const userId = req.user.id;
+      // Recalculate the total expense for the user
+      const totalExpense = await Expense.sum('amount', { where: { userId } });
+
+      // Update the totalexpense field in the users table
+      await User.update({ totalexpense: totalExpense }, { where: { id: userId } });
 
       res.send({ message: 'Expense deleted successfully!' });
     } catch (error) {

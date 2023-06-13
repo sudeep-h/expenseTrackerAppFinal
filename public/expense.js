@@ -103,7 +103,7 @@ document.getElementById('razorpay').onclick = async function(e){
             "order_id" : response.data.order.id,
             "handler" : async function(response){
                 await axios.post(`http://localhost:3100/purchase/transactionStatus`,
-                {order_id:options.order_id,payment_id:response.razorpay_payment_id},{
+                {order_id:options.order_id,payment_id:response.razorpay_payment_id},{         
                     headers:{"Authorization":token}
                 });
                 console.log("payment-id : ",payment_id);
