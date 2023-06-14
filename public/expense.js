@@ -1,9 +1,48 @@
 const expenseForm = document.getElementById('expense-form');
 expenseForm.addEventListener('submit',addExpense);
 
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+}
+
+// window.onload = async function () {
+//     const token = localStorage.getItem('token');
+//     const decodeToken = parseJwt(token);
+//     console.log(decodeToken);
+//     const isAdmin = decodeToken.ispremiumuser;
+  
+//     if (isAdmin) {
+//       premiumFeatures();
+//     }
+//     try {
+//       const response = await axios.get("http://localhost:3100/expense/getExpense", {
+//         headers: { 'Authorization': token }
+//       });
+  
+//       response.data.allExpense.forEach(expense => {
+//         showOnScreen(expense);
+//       });
+//     } catch (error) {
+//       console.log("Error loading expenses:", error);
+//     }
+  
+//   };
+
+
+
+
+
 window.onload = async function()
 {
     await getExpenses()
+    if(isAdmin){
+        premiumFeatures();
+    }
 }
 
 async function addExpense(event) {
@@ -24,30 +63,41 @@ async function addExpense(event) {
       console.log("Expense data sent to the server:", response.data.expense);
       showOnScreen(response.data.expense);
       expenseForm.reset();
+      //
+      const ispremiumuser = response.data.ispremiumuser;
+      if (ispremiumuser){
+        isAdmin = true;
+        premiumFeatures();
+      }
+      //
     } catch (error) {
       console.log("Error sending expense data:", error);
     }
 }
 
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-}
+
+// function parseJwt (token) {
+//     var base64Url = token.split('.')[1];
+//     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+//     var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+//         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+//     }).join(''));
+//     return JSON.parse(jsonPayload);
+// }
 
 const token = localStorage.getItem('token');
 const decodeToken = parseJwt(token);
 console.log("decodeToken : ",decodeToken);
+const isAdmin = decodeToken.ispremiumuser;
 
-window.onload = function(){
-    getExpenses();
-};
+
+// window.onload = function(){
+//     getExpenses();
+// };
 
 async function getExpenses(){
-    try{
+    
+    try{                                                                   
         const response = await axios.get("http://localhost:3100/expense/getExpense",{
             headers : {"Authorization" : token }
         });
@@ -57,6 +107,9 @@ async function getExpenses(){
         data.forEach(expense=>{
             showOnScreen(expense);
         });
+        if (isAdmin){
+            premiumFeatures();
+        }
     }catch(err){
         console.log("Error Loading Expenses : ",err.message);
     }
@@ -127,3 +180,29 @@ document.getElementById('razorpay').onclick = async function(e){
     }
 }
 
+function premiumFeatures(){
+    document.getElementById('message').innerHTML='You are a premium user';
+    const leaderButton = document.getElementById('razorpay');
+    leaderButton.innerHTML = 'Show Leaderboard';
+    leaderButton.onclick = async () =>{
+        const token = localStorage.getItem('token');
+
+        try{
+            const response = await axios.get('http://localhost:3100/purchase/leaderboard',{
+                headers:{'Authorization':token}
+            });
+
+            const leaderboardData = response.data.data;
+
+            document.getElementById('message').innerHTML='';
+            leaderboardData.forEach(item=>{
+                const li = document.createElement('li');
+                li.className='listLeaders';
+                li.textContent = `Name: ${item.name} - Total Expense : ${item.totalexpense}`;
+                document.getElementById('message').appendChild('li');
+            });
+        }catch(err){
+            console.log(err.message);
+        };
+    };
+}

@@ -25,9 +25,13 @@ async function getExpense(req, res) {
     try {
       const userId = req.user.id;
       console.log("USERId: ",userId);
-      const data = await Expense.findAll({ where: { userId: userId } });
-      //console.log("DATA : ",data)
-      res.send({data});
+      // const data = await Expense.findAll({ where: { userId: userId } });
+      // res.send({data});
+      const {count,rows:expenses}=await Expense.findAndCountAll({
+        where:{userId},
+        order:[['id','DESC']]
+      });
+      res.status(200).json({allExpense: expenses,totalExpense:count});
     } catch (error) {
       console.log(error);
       res.status(500).send(error);
