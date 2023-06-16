@@ -1,5 +1,6 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order');
+const userController = require('../controllers/loginC');
 
 const purchasePremium = async (req,res,next)=>{
     try{
@@ -25,6 +26,7 @@ const purchasePremium = async (req,res,next)=>{
 };
 
 const updateTransactionStatus = async (req,res)=>{
+    const userId=req.user.id                                                
     try{
         const { paymentId,order_id,status} = req.body;         
         console.log("Requested body : ", req.body);
@@ -41,7 +43,7 @@ const updateTransactionStatus = async (req,res)=>{
                 req.user.update({ispremiumuser:true})
             ]);
         }
-        return res.status(202).json({success:true, message:"Transaction Successful",ispremiumuser:true});
+        return res.status(202).json({success:true, message:"Transaction Successful",token:userController.generateToken(userId,undefined,true)});
     }catch(err){
         console.log(err.message);
         return res.status(500).json({success:false,message:"Internal Server Error"});    
