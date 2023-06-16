@@ -10,31 +10,10 @@ function parseJwt (token) {
     return JSON.parse(jsonPayload);
 }
 
-// window.onload = async function () {
-//     const token = localStorage.getItem('token');
-//     const decodeToken = parseJwt(token);
-//     console.log(decodeToken);
-//     const isAdmin = decodeToken.ispremiumuser;
-  
-//     if (isAdmin) {
-//       premiumFeatures();
-//     }
-//     try {
-//       const response = await axios.get("http://localhost:3100/expense/getExpense", {
-//         headers: { 'Authorization': token }
-//       });
-  
-//       response.data.allExpense.forEach(expense => {
-//         showOnScreen(expense);
-//       });
-//     } catch (error) {
-//       console.log("Error loading expenses:", error);
-//     }
-  
-//   };
-
-
-
+const token = localStorage.getItem('token');
+const decodeToken = parseJwt(token);
+console.log("decodeToken : ",decodeToken);
+const isAdmin = decodeToken.ispremiumuser;
 
 
 window.onload = async function()
@@ -83,12 +62,12 @@ async function addExpense(event) {
 //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 //     }).join(''));
 //     return JSON.parse(jsonPayload);
-// }
+// }    
 
-const token = localStorage.getItem('token');
-const decodeToken = parseJwt(token);
-console.log("decodeToken : ",decodeToken);
-const isAdmin = decodeToken.ispremiumuser;
+// const token = localStorage.getItem('token');
+// const decodeToken = parseJwt(token);
+// console.log("decodeToken : ",decodeToken);
+// const isAdmin = decodeToken.ispremiumuser;
 
 
 // window.onload = function(){
@@ -96,15 +75,14 @@ const isAdmin = decodeToken.ispremiumuser;
 // };
 
 async function getExpenses(){
-    
     try{                                                                   
         const response = await axios.get("http://localhost:3100/expense/getExpense",{
             headers : {"Authorization" : token }
         });
         console.log("CHECKING RESPONSE",response);
-        const data = response.data.data;
+        const data = response.data;
         console.log("data printing : ",data);
-        data.forEach(expense=>{
+        data.allExpense.forEach(expense=>{
             showOnScreen(expense);
         });
         if (isAdmin){
@@ -161,6 +139,9 @@ document.getElementById('razorpay').onclick = async function(e){
                 });
                 console.log("payment-id : ",response.razorpay_payment_id);
                 alert("Congratulations!!! You are a premium User Now");
+                document.getElementById('razorpay').style.visibility="hidden";
+                document.getElementById('message1').innerHTML="You are a premium user";                            
+                localStorage.setItem('token',response.token);
             }
         };
 
@@ -181,7 +162,7 @@ document.getElementById('razorpay').onclick = async function(e){
 }
 
 function premiumFeatures(){
-    document.getElementById('message').innerHTML='You are a premium user';
+    document.getElementById('message1').innerHTML='You are a premium user';                             
     const leaderButton = document.getElementById('razorpay');
     leaderButton.innerHTML = 'Show Leaderboard';
     leaderButton.onclick = async () =>{
@@ -193,13 +174,14 @@ function premiumFeatures(){
             });
 
             const leaderboardData = response.data.data;
+            console.log("LEADERBOARD DATA : ",leaderboardData);
 
             document.getElementById('message').innerHTML='';
             leaderboardData.forEach(item=>{
                 const li = document.createElement('li');
                 li.className='listLeaders';
                 li.textContent = `Name: ${item.name} - Total Expense : ${item.totalexpense}`;
-                document.getElementById('message').appendChild('li');
+                document.getElementById('message').appendChild(li);
             });
         }catch(err){
             console.log(err.message);

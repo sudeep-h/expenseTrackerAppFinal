@@ -38,9 +38,7 @@
 
       try {
         const response = await axios.post('/user/signup', signUpDetails);
-        console.log("first stage of signup")
         if (response.status === 201) {
-            console.log("THIS IS INSIDE IF ")
           alert(response.data.message);
           alert("Successfully signed up! Please Login");
           window.location.href = "/login"; // Redirect to login page

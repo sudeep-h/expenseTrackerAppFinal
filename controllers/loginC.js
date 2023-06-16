@@ -2,6 +2,11 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+function generateToken(id,ispremiumuser){
+    return jwt.sign({userId:id,ispremiumuser},'secretkey')
+}
+
+
 async function signUp(req,res){
     try{
         const {name,email,password } = req.body;
@@ -28,9 +33,6 @@ async function signUp(req,res){
     }
 }
 
-function generateToken(id){
-    return jwt.sign({userId:id},'secretkey')
-}
 
 async function login(req,res){
     const {email,password} = req.body;
@@ -44,7 +46,7 @@ async function login(req,res){
                     throw new Error("Something went wrong")
                 }
                     if(result===true){
-                        res.status(200).json({success : true, message:"User Logged in successfully",token: generateToken(user.id, user.name)});
+                        res.status(200).json({success : true, message:"User Logged in successfully",token: generateToken(user.id,user.ispremiumuser)});
                     }else{
                         return res.status(400).json({success:false,message:"Incorrect password"})
                     }
@@ -59,4 +61,4 @@ async function login(req,res){
     }
 }
 
-module.exports={signUp,login,generateToken};
+module.exports={signUp,login,generateToken};     
