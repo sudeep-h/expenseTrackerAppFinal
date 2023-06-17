@@ -29,7 +29,7 @@ async function getExpense(req, res) {
       // res.send({data});
       const {count,rows:expenses}=await Expense.findAndCountAll({
         where:{userId},
-        order:[['id','DESC']]
+        order:[['id','DESC']]                       
       });
       res.status(200).json({allExpense: expenses,totalExpense:count});
     } catch (error) {
