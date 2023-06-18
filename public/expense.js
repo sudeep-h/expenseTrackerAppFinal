@@ -1,12 +1,13 @@
 const expenseForm = document.getElementById('expense-form');
 expenseForm.addEventListener('submit',addExpense);
 
-function parseJwt (token) {
+function parseJwt(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
+  
     return JSON.parse(jsonPayload);
 }
 
@@ -85,6 +86,7 @@ function showOnScreen(expense){
     delb.value = "delete";
     delb.onclick= async ()=>{
         const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
         li.remove();
         try{
             const response = await axios.delete(`http://localhost:3100/expense/deleteExpense/${expense.id}`,{
@@ -102,7 +104,8 @@ function showOnScreen(expense){
 
 
 document.getElementById('razorpay').onclick = async function(e){
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    // console.log("old token: ", token)
 
     try{
         const response = await axios.get('http://localhost:3100/purchase/premiumMembership',{
@@ -119,9 +122,12 @@ document.getElementById('razorpay').onclick = async function(e){
                 });
                 console.log("payment-id : ",response.razorpay_payment_id);
                 alert("Congratulations!!! You are a premium User Now");
+                premiumFeatures();
                 document.getElementById('razorpay').style.visibility="hidden";
-                document.getElementById('message1').innerHTML="You are a premium user";                            
+                document.getElementById('message1').innerHTML="You are a premium user";                           
                 localStorage.setItem('token',response.token);
+                console.log("new token ; ", token)
+                
             }
         };
 
@@ -142,8 +148,9 @@ document.getElementById('razorpay').onclick = async function(e){
 }
 
 function premiumFeatures(){
+    document.getElementById('razorpay').style.visibility="hidden";          
     document.getElementById('message1').innerHTML='You are a premium user';                             
-    const leaderButton = document.getElementById('razorpay');
+    const leaderButton = document.createElement('button');           //const leaderButton = document.getElementById('razorpay')
     leaderButton.innerHTML = 'Show Leaderboard';
     leaderButton.onclick = async () =>{
         const token = localStorage.getItem('token');
@@ -167,4 +174,35 @@ function premiumFeatures(){
             console.log(err.message);
         };
     };
+    //
+    const downloadReportBtn = document.createElement('button');
+    downloadReportBtn.innerHTML = "Download Report";
+    downloadReportBtn.onclick = async function(){
+        downloadReport();
+    }
+    const premiumFeaturesSection = document.getElementById('premium-features');
+    premiumFeaturesSection.innerHTML = '';
+    premiumFeaturesSection.appendChild(leaderButton);
+    premiumFeaturesSection.appendChild(downloadReportBtn);
+}
+
+async function downloadReport(){
+    try{
+        const token = localStorage.getItem('token');
+        const response = await axios.get("http://localhost:3100/expense/download-report",{headers:{"Authorization":token}});
+        console.log("Printing the response : ", response);
+        if (response.status ===200){
+            const fileUrl = response.data.fileUrl;
+
+            const a = document.createElement('a');
+            a.href=response.data.fileUrl;
+            a.download = 'myexpense.txt';
+            a.click();
+        }else{
+            console.log("Error in downloading")
+            throw new Error(response.data.message);
+        }
+    }catch(err){
+        console.log("ERROR CHECK IN DOWNLOADING : ",err.message);
+    }
 }
