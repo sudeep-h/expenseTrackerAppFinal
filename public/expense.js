@@ -192,11 +192,11 @@ async function downloadReport(){
         const response = await axios.get("http://localhost:3100/expense/download-report",{headers:{"Authorization":token}});
         console.log("Printing the response : ", response);
         if (response.status ===200){
-            const fileUrl = response.data.fileUrl;
-
+            const fileUrl = response.data.fileURL;
+            console.log("FILEURL: ", fileUrl);
             const a = document.createElement('a');
-            a.href=response.data.fileUrl;
-            a.download = 'myexpense.txt';
+            a.href=response.data.fileURL;
+            a.download = `Expense.txt`;
             a.click();
         }else{
             console.log("Error in downloading")

@@ -4,7 +4,7 @@ async function getPremiumUsers(req,res,next){
     try{
         const data = await User.findAll({
             attributes:['name','totalexpense'],
-            order:[['totalexpense','DESC']]
+            order:[['totalexpense',"DESC"]]
         });
         res.status(200).json({data});
     }catch(err){

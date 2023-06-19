@@ -1,5 +1,8 @@
 const Expense = require('../models/expense');
 const User = require('../models/user');
+const UserServices = require('../services/userservices');
+const S3 = require('../services/S3');
+
 
 async function addExpense(req, res) {
     try {
@@ -62,6 +65,25 @@ async function deleteExpense(req, res) {
       res.status(500).send({ message: 'Error deleting expense.' });
     }
 }
-  
 
-module.exports = {addExpense,getExpense,deleteExpense};
+const downloadReport = async(req,res,next)=>{
+  try{
+    if(req.user.ispremiumuser ===true ){
+      const expenses =  await UserServices.getExpenses(req);
+      console.log(expenses,"PRINTING FROM EXPENSEC");
+      const stringifiedExpenses = JSON.stringify(expenses);
+      const userId = req.user.id;
+      const filename = `Expense${userId}/${new Date()}.txt`;
+      const bufferData = Buffer.from(stringifiedExpenses,'utf-8');
+      console.log(filename,"FILENAME")
+      const fileURL = await S3.uploadToS3(bufferData,filename);
+      res.status(200).json({fileURL})
+    }else{
+      res.status(403).json({message:'Only Premium Users can download the report.'})
+    }
+  }catch(err){
+    console.log("Printing the error in downloading the report",err.message);
+  }
+}
+
+module.exports = {addExpense,getExpense,deleteExpense,downloadReport};

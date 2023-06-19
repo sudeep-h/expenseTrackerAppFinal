@@ -26,7 +26,7 @@ const purchasePremium = async (req,res,next)=>{
 };
 
 const updateTransactionStatus = async (req,res)=>{
-    const userId=req.user.id                                                
+    const userId=req.user.id                                                //////
     try{
         const { paymentId,order_id,status} = req.body;         
         console.log("Requested body : ", req.body);
