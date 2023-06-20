@@ -25,6 +25,14 @@
         
     </form>
     <div id="message1"></div>
+
+    <div class="btn-group container bg-primary">
+        <h3>Visible expense at a time</h3>
+        <a class="btn btn-outline-success" onclick="pageSize(5)">5</a>
+        <a class="btn btn-outline-success" onclick="pageSize(10)">10</a>
+        <a class="btn btn-outline-success" onclick="pageSize(15)">15</a>
+    </div>
+    
     <ul id="expenses"></ul>
     
     <button id="razorpay">Buy Premium</button>
@@ -36,6 +44,7 @@
     <div id="message" class="list-group"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 
+    <div id="pagination"></div>
                    
     <script src='expense.js'></script>              
 </body>

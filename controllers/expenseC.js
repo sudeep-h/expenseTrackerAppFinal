@@ -1,5 +1,6 @@
 const Expense = require('../models/expense');
 const User = require('../models/user');
+const DownloadReport = require('../models/downloadreport');
 const UserServices = require('../services/userservices');
 const S3 = require('../services/S3');
 
@@ -28,13 +29,25 @@ async function getExpense(req, res) {
     try {
       const userId = req.user.id;
       console.log("USERId: ",userId);
+      const page = +req.query.page || 1;
+      const pageSize = +req.query.pageSize || 10;
       // const data = await Expense.findAll({ where: { userId: userId } });
       // res.send({data});
       const {count,rows:expenses}=await Expense.findAndCountAll({
         where:{userId},
+        offset :(page-1)*pageSize,
+        limit:pageSize,
         order:[['id','DESC']]                       
       });
-      res.status(200).json({allExpense: expenses,totalExpense:count});
+      res.status(200).json({
+        allExpense: expenses,
+        currentPage:page,
+        totalExpense:count,
+        hasNextpage: pageSize * page < count,
+        nextPage : page+1,
+        hasPreviousPage : page-1,
+        lastPage:Math.ceil(count/pageSize)
+      });
     } catch (error) {
       console.log(error);
       res.status(500).send(error);
@@ -77,6 +90,12 @@ const downloadReport = async(req,res,next)=>{
       const bufferData = Buffer.from(stringifiedExpenses,'utf-8');
       console.log(filename,"FILENAME")
       const fileURL = await S3.uploadToS3(bufferData,filename);
+      //
+      await DownloadReport.create({
+        userId: userId,
+        URL: fileURL
+      });
+      //
       res.status(200).json({fileURL})
     }else{
       res.status(403).json({message:'Only Premium Users can download the report.'})

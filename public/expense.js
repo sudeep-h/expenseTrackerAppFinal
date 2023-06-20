@@ -12,6 +12,8 @@ function parseJwt(token) {
 }
 
 const token = localStorage.getItem('token');
+// const page = 1;
+// const pageSize = localStorage.getItem('pageSize');
 const decodeToken = parseJwt(token);
 console.log("decodeToken : ",decodeToken);
 const isAdmin = decodeToken.ispremiumuser;
@@ -22,6 +24,19 @@ window.onload = async function()
     await getExpenses()
     if(isAdmin){
         premiumFeatures();
+    }
+}
+
+async function pageSize(val){
+    try{
+        const token = localStorage.getItem('token');
+        localStorage.setItem('pageSize',`${val}`);
+        const page = 1;
+        const res = await axios.get(`http://localhost:3100/expense/getExpense?page=${page}&pageSize=${val}`,
+            {headers:{"Authorization":token}});
+            showPagination(res.data);
+    }catch(err){
+        console.log(err.message);
     }
 }
 
@@ -69,10 +84,12 @@ async function getExpenses(){
         if (isAdmin){
             premiumFeatures();
         }
+        showPagination(response.data);
     }catch(err){
         console.log("Error Loading Expenses : ",err.message);
     }
 }
+
 
 function showOnScreen(expense){
     const expenseList = document.getElementById('expenses');
@@ -204,5 +221,55 @@ async function downloadReport(){
         }
     }catch(err){
         console.log("ERROR CHECK IN DOWNLOADING : ",err.message);
+    }
+}
+
+async function showPagination({currentPage,hasNextPage, nextPage, hasPreviousPage, previousPage, lastPage}){
+    try{
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML="";
+
+        const createButton = (pageNum) =>{
+            const btn = document.createElement('button');
+            btn.innerHTML=pageNum;
+            btn.addEventListener('click',()=>getExpenseByPage(pageNum));
+            pagination.appendChild(btn)
+        }
+
+        if (hasPreviousPage){
+            createButton(previousPage);
+        }
+
+        createButton(currentPage);
+
+        if (hasNextPage){
+            createButton(nextPage);
+        }
+
+        if(currentPage!==lastPage && lastPage!==nextPage){
+            createButton(lastPage);
+        }
+    }catch(err){
+        console.log(err.message)
+    }
+}
+
+async function getExpenseByPage(page){
+    try{
+        const token = localStorage.getItem('token');
+        // const pageSize = localStorage.getItem('pageSize');
+        const response = await axios.get(`http://localhost:3100/expense/getExpense?page=${page}&pageSize=${pageSize}`,{
+            headers:{"Authorization":token}
+        })
+
+        const expenses = response.data.allExpense;
+        const expensesList = document.getElementById('expenses');
+        expensesList.innerHTML='';
+        expenses.forEach(expense=>{
+            showOnScreen(expense);
+        })
+        showPagination(response.data);
+    }catch(err){
+        console.log(err.message)
     }
 }

@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const {Sequelize,DataTypes} = require('sequelize');
 
 const sequelize = require('../util/database');
 
@@ -9,7 +9,12 @@ const Downloadreport = sequelize.define('downloadreport',{
         primaryKey : true,
         autoIncrement:true
     },
-    URL:Sequelize.STRING
+    URL:Sequelize.STRING,
+    downloadedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+      }
 })
 
 module.exports = Downloadreport;
