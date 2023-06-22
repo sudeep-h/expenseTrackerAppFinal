@@ -35,6 +35,7 @@ async function pageSize(val){
         const res = await axios.get(`http://localhost:3100/expense/getExpense?page=${page}&pageSize=${val}`,
             {headers:{"Authorization":token}});
             showPagination(res.data);
+            console.log("PRINTING RESPONSE FROM SHOWPAGINATION",res.data);
     }catch(err){
         console.log(err.message);
     }
@@ -250,19 +251,20 @@ async function showPagination({currentPage,hasNextPage, nextPage, hasPreviousPag
             createButton(lastPage);
         }
     }catch(err){
-        console.log(err.message)
+        console.log("ERROR IN CREATingS BUTTON",err.message)
     }
 }
 
 async function getExpenseByPage(page){
     try{
         const token = localStorage.getItem('token');
-        // const pageSize = localStorage.getItem('pageSize');
+        const pageSize = localStorage.getItem('pageSize');
         const response = await axios.get(`http://localhost:3100/expense/getExpense?page=${page}&pageSize=${pageSize}`,{
             headers:{"Authorization":token}
         })
 
         const expenses = response.data.allExpense;
+        console.log("PRINTING EXPENSES IN GETEXPENSESBYPAGE FUN",expenses);
         const expensesList = document.getElementById('expenses');
         expensesList.innerHTML='';
         expenses.forEach(expense=>{
