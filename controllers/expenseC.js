@@ -36,7 +36,7 @@ async function getExpense(req, res) {
       const {count,rows:expenses}=await Expense.findAndCountAll({
         where:{userId},
         offset :(page-1)*pageSize,
-        limit:pageSize,
+        limit:pageSize,   
         order:[['id','DESC']]                       
       });
       res.status(200).json({
@@ -90,12 +90,10 @@ const downloadReport = async(req,res,next)=>{
       const bufferData = Buffer.from(stringifiedExpenses,'utf-8');
       console.log(filename,"FILENAME")
       const fileURL = await S3.uploadToS3(bufferData,filename);
-      //
       await DownloadReport.create({
         userId: userId,
         URL: fileURL
       });
-      //
       res.status(200).json({fileURL})
     }else{
       res.status(403).json({message:'Only Premium Users can download the report.'})
