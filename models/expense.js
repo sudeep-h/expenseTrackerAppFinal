@@ -19,7 +19,12 @@ const Expense = sequelize.define('Expense',{
     category:{
         type:DataTypes.STRING,
         allowNull:false
+    },
+},
+    {
+        tableName: 'expense',
+        timestamps: false,          // Set timestamps to false to disable the default timestamps
     }
-});
+);
 
 module.exports = Expense;

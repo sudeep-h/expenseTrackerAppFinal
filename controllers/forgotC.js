@@ -1,6 +1,8 @@
 const uuid = require('uuid');
 const sendinblue= require('sib-api-v3-sdk');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const User = require('../models/user');
 const Password = require('../models/password');

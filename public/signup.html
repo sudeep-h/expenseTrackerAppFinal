@@ -2,15 +2,80 @@
 <html>
 <head>
   <title>Sign Up</title>
-  <!-- <style>
-    /* CSS styles here */
-  </style> -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4aaf1;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+     
+    }
+
+    form {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      width: 350px;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #034e04;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      color: #333333;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 10px;
+      margin-bottom: 10px;
+      width: 95%;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+    }
+
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #034e04;        
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: auto;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    p {
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
 
     <form id="signupForm">
-      <h2 style="color: royalblue;">Sign Up</h2>
+      <h2 style="color: #034e04;">Sign Up</h2>
       <label for="name">Username:</label>
       <input type="text" id="name" name="name" required>
 
@@ -22,7 +87,7 @@
 
       <input type="submit" value="Sign Up">
     </form>
-    <p style="text-align: center;">Already have an account? <a href="/login">Log in</a></p>
+    <p style="text-align: center;">Already have an account? <a href="/login">Login</a></p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

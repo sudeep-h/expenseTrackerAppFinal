@@ -16,7 +16,7 @@ const token = localStorage.getItem('token');
 // const pageSize = localStorage.getItem('pageSize');
 const decodeToken = parseJwt(token);
 console.log("decodeToken : ",decodeToken);
-const isAdmin = decodeToken.ispremiumuser;
+let isAdmin = decodeToken.ispremiumuser;
 
 
 window.onload = async function()
@@ -103,7 +103,7 @@ function showOnScreen(expense){
     delb.type="button";
     delb.value = "delete";
     delb.onclick= async ()=>{
-        const token = localStorage.getItem('token');
+        let token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
         li.remove();
         try{
@@ -168,10 +168,10 @@ document.getElementById('razorpay').onclick = async function(e){
 function premiumFeatures(){
     document.getElementById('razorpay').style.visibility="hidden";          
     document.getElementById('message1').innerHTML='You are a premium user';                             
-    const leaderButton = document.createElement('button');           //const leaderButton = document.getElementById('razorpay')
+    const leaderButton = document.createElement('button');          
     leaderButton.innerHTML = 'Show Leaderboard';
     leaderButton.onclick = async () =>{
-        const token = localStorage.getItem('token');
+        let token = localStorage.getItem('token');
 
         try{
             const response = await axios.get('http://localhost:3100/purchase/leaderboard',{

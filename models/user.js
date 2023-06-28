@@ -25,6 +25,11 @@ const User = sequelize.define('user',{
     },
     ispremiumuser:Sequelize.BOOLEAN,
     totalexpense:Sequelize.STRING
-});
+},
+{
+    tableName: 'user',
+    timestamps: false,          // Set timestamps to false to disable the default timestamps
+}
+);
 
 module.exports = User;
