@@ -36,7 +36,7 @@ async function getExpense(req, res) {
       const {count,rows:expenses}=await Expense.findAndCountAll({
         where:{userId},
         offset :(page-1)*pageSize,
-        limit:pageSize,   
+        limit:pageSize, 
         order:[['id','DESC']]                       
       });
       res.status(200).json({
