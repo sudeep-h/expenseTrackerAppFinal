@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd apps/frontend
-          pnpm install
+          pnpm install --no-frozen-lockfile
 
       - name: Run linting
         run: |
