@@ -15,7 +15,7 @@ A modern Next.js 15 application for expense tracking with the following features
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - pnpm
 
 ### Installation
