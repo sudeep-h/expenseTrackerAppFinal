@@ -1,12 +1,27 @@
 {
   "name": "expensetrackerappfinal",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "Expense Tracker Monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "start-server": "node app.js"
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd apps/frontend && pnpm dev",
+    "dev:backend": "cd apps/backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd apps/frontend && pnpm build",
+    "build:backend": "cd apps/backend && npm run build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd apps/frontend && pnpm test",
+    "test:backend": "cd apps/backend && npm test",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd apps/frontend && pnpm lint",
+    "lint:backend": "cd apps/backend && npm run lint",
+    "format": "npm run format:frontend",
+    "format:frontend": "cd apps/frontend && pnpm format"
   },
   "author": "",
   "license": "ISC",
@@ -27,5 +42,11 @@
     "sequelize": "^6.32.0",
     "sib-api-v3-sdk": "^8.5.0",
     "uuid": "^9.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-personal:sudeep-h/expenseTrackerAppFinal.git"
+  },
+  "keywords": []
 }
