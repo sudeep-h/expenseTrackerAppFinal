@@ -1,10 +1,17 @@
 'use client';
 
 import { useEffect } from 'react';
+import type { Metadata } from 'next'
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { buildPageMetadata } from '@/lib/metadata'
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Welcome',
+  description: 'Sign in or create an account to continue',
+})
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -47,7 +54,7 @@ export default function Home() {
               Sign In
             </Button>
           </Link>
-          <Link href="/register">
+          <Link href="/signup">
             <Button variant="outline" className="w-full" size="lg">
               Create Account
             </Button>

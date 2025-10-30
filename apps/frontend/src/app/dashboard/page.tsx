@@ -1,4 +1,11 @@
 'use client';
+import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/metadata'
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Dashboard',
+  description: 'Overview of your spending and insights',
+})
 
 import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
