@@ -46,12 +46,13 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }) {
       // Initial sign in
       if (account && user) {
+        const userWithToken = user as typeof user & { accessToken?: string };
         return {
           ...token,
           id: user.id,
           name: user.name,
           email: user.email,
-          accessToken: (user as any).accessToken || account.access_token,
+          accessToken: userWithToken.accessToken || account.access_token,
         };
       }
 
@@ -63,7 +64,7 @@ const authOptions: NextAuthOptions = {
         session.user.name = token.name as string;
         session.user.email = token.email as string;
         if (token.accessToken) {
-          (session as any).accessToken = token.accessToken;
+          Object.assign(session, { accessToken: token.accessToken });
         }
       }
       return session;

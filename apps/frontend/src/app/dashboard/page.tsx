@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -16,22 +15,19 @@ export default function DashboardPage() {
 
     if (!session) {
       router.push('/login');
-      return;
     }
-
-    setIsLoading(false);
   }, [session, status, router]);
 
   const handleLogout = async () => {
     try {
       await signOut({ callbackUrl: '/login' });
       toast.success('Logged out successfully');
-    } catch (error) {
+    } catch {
       toast.error('Error logging out');
     }
   };
 
-  if (isLoading || status === 'loading') {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -82,7 +78,7 @@ export default function DashboardPage() {
                 You are logged in as: {session.user?.email}
               </p>
               <p className="text-sm text-gray-500">
-                This is where you'll manage your expenses and view analytics.
+                This is where you will manage your expenses and view analytics.
               </p>
             </div>
           </div>
