@@ -1,11 +1,11 @@
-import type { Metadata } from 'next'
-import { SignupForm } from "@/components/signup-form"
-import { buildPageMetadata } from '@/lib/metadata'
+import type { Metadata } from 'next';
+import { SignupForm } from '@/components/signup-form';
+import { buildPageMetadata } from '@/lib/metadata';
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Create account',
   description: 'Create your MeraBachat account',
-})
+});
 
 export default function SignupPage() {
   return (
@@ -14,5 +14,5 @@ export default function SignupPage() {
         <SignupForm />
       </div>
     </div>
-  )
+  );
 }

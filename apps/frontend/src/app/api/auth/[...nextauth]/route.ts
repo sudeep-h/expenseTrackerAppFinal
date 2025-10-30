@@ -72,13 +72,13 @@ const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       // Use NEXTAUTH_URL if available, otherwise fallback to baseUrl
       const authUrl = process.env.NEXTAUTH_URL || baseUrl;
-      
+
       // Always redirect to dashboard after successful Google OAuth
       if (url.includes('/api/auth/callback/google')) {
         return `${authUrl}/dashboard`;
       }
       // Handle other relative URLs
-      if (url.startsWith("/")) return `${authUrl}${url}`;
+      if (url.startsWith('/')) return `${authUrl}${url}`;
       return url;
     },
   },

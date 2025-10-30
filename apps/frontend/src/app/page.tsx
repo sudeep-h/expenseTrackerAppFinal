@@ -13,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    
+
     if (session) {
       router.push('/dashboard');
     }
@@ -34,17 +34,20 @@ export default function Home() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 text-center">
         <div className="flex items-center justify-center">
-          <Image src="/logo-cropped.png" alt="MeraBachat" width={1000} height={1000} />
+          <Image
+            src="/logo-cropped.png"
+            alt="MeraBachat"
+            width={1000}
+            height={1000}
+          />
         </div>
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            MeraBachat
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">MeraBachat</h1>
           <p className="text-lg text-gray-600 mb-8">
             Track your expenses and manage your finances with ease
           </p>
         </div>
-        
+
         <div className="space-y-4">
           <Link href="/login">
             <Button className="w-full" size="lg">
