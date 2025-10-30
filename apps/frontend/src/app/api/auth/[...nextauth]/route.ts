@@ -43,17 +43,42 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.accessToken = (user as any).accessToken;
+    async jwt({ token, user, account }) {
+      // Initial sign in
+      if (account && user) {
+        return {
+          ...token,
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          accessToken: (user as any).accessToken || account.access_token,
+        };
       }
+
       return token;
     },
     async session({ session, token }) {
-      if (token.accessToken) {
-        (session as any).accessToken = token.accessToken;
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        if (token.accessToken) {
+          (session as any).accessToken = token.accessToken;
+        }
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Use NEXTAUTH_URL if available, otherwise fallback to baseUrl
+      const authUrl = process.env.NEXTAUTH_URL || baseUrl;
+      
+      // Always redirect to dashboard after successful Google OAuth
+      if (url.includes('/api/auth/callback/google')) {
+        return `${authUrl}/dashboard`;
+      }
+      // Handle other relative URLs
+      if (url.startsWith("/")) return `${authUrl}${url}`;
+      return url;
     },
   },
   pages: {
